@@ -232,7 +232,6 @@ func main() {
 	conda("install", "conda-build="+condaBuildVersion, "-y")
 	conda("index", "output/linux-64")
 	conda("index", "output/noarch")
-	return
 }
 
 func scan(deps *[]depInfo, scanPatterns bool) bool {

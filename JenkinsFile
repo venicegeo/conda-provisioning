@@ -53,10 +53,16 @@ node {
 	    }
 	}
     }
+
+	stage("Solve") {
+		withEnv(["PATH+=${root}/gopath/bin"]) {
+			sh "conda-provisioning --repo bf-tideprediction --force curl=7.49.1 --force requests=2.11.1 --allow hdf5 --allow sqlite --allow jpeg --allow yaml -echannel=file:/${root}/docker/share/channel"
+		}
+	}
     
     stage("Nexus Deploy") {
 		sh """
-	  	  find ${root}/docker/share -type f
+	  	  find output -type f
 		  exit 1
 		"""
         dir ("docker/share") {
