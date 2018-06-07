@@ -6,7 +6,7 @@ build:
   #skip: True # [osx]
 source:
   fn: potrace-1.15.linux-x86_64.tar.gz
-  url: http://potrace.sourceforge.net/download/1.15/potrace-1.15.tar.gz
+  url: https://downloads.sourceforge.net/project/potrace/1.15/potrace-1.15.tar.gz?r=https%3A%2F%2Fsourceforge.net%2Fprojects%2Fpotrace%2Ffiles%2F1.15%2Fpotrace-1.15.tar.gz%2Fdownload%3Fuse_mirror%3Dayera&ts=1528389557
 requirements:
   build:
     - gcc   [linux]
