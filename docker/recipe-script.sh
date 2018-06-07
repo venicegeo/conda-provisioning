@@ -17,6 +17,7 @@ recipes=$(ls)
 for f in $recipes; do
   echo "Starting build for $f"
   conda build $f --old-build-string -q
+  conda clean --all
 done
 cd
 mkdir -p channel/linux-64
