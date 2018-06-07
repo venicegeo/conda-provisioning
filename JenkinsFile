@@ -35,6 +35,9 @@ node {
 			  mv main.go ${root}/gopath/src/github.com/venicegeo/conda-provisioning
 			  cd ${root}/gopath/src/github.com/venicegeo/conda-provisioning
 			  go install
+			  cd
+			  rm -rf gopath/src
+			  rm -rf gopath/pkg
             """
         }
     }
