@@ -27,6 +27,7 @@ var repos astringVar
 var allowDouble astringVar
 var externalChannel string
 var condaBuildVersion string
+var condaVersion string
 
 type forcing []dependency
 
@@ -109,6 +110,7 @@ func main() {
 	flag.StringVar(&internalRecipesRepo, "inrecipesrepo", "venicegeo-conda-recipes", "Internal Recipes Repo")
 	flag.StringVar(&externalChannel, "echannel", "", "External channel local path")
 	flag.StringVar(&condaBuildVersion, "build", "3.0.6", "Which version of conda-build to use")
+	flag.StringVar(&condaVersion, "conda", "4.3.21", "Which conda version to use")
 	flag.Var(&forcedDeps, "force", "Force a dependency version")
 	flag.Var(&repos, "repo", "Add a repository to scan")
 	flag.Var(&allowDouble, "allow", "Allow duplicate package versions")
@@ -158,6 +160,8 @@ func main() {
 			}
 		}
 	}
+	allDependencies = append(allDependencies, depInfo{dependency{"python", pythonVersion}, ""})
+	allDependencies = append(allDependencies, depInfo{dependency{"conda", condaVersion}, ""})
 	allDependencies = append(allDependencies, depInfo{dependency{"conda-build", condaBuildVersion}, ""})
 	log.Println("First pass - direct dependencies")
 	for _, d := range allDependencies {
@@ -289,7 +293,7 @@ func addTo(dep dependency, deps *[]depInfo) {
 		dep[i] = strings.ToLower(p)
 	}
 	dep[0] = strings.Replace(dep[0], ".", "", -1)
-	if dep[0] == "python" || dep[0] == "conda" {
+	if dep[0] == "python" {
 		return
 	}
 	for _, d := range forcedDeps {
@@ -308,23 +312,35 @@ func addTo(dep dependency, deps *[]depInfo) {
 		erro := func() {
 			log.Fatalf("The package %s wants to use both versions %s and %s. Cannot continue until this is resolved.\n", e.dep[0], e.dep[1], dep[1])
 		}
+		allow := func() bool {
+			for _, a := range allowDouble {
+				if a == e.dep[0] {
+					return true
+				}
+			}
+			return false
+		}
 		existingVersionPattern := e.dep[1]
 		newVersionPattern := dep[1]
 		if existingVersionPattern == newVersionPattern {
 			return
 		} else if versionIsNotPattern(existingVersionPattern) && versionIsNotPattern(newVersionPattern) {
-			for _, a := range allowDouble {
-				if a == e.dep[0] {
-					return
-				}
+			if allow() {
+				continue
 			}
 			erro()
 		} else if versionIsNotPattern(existingVersionPattern) {
 			if !testVersionMatchesPattern(existingVersionPattern, newVersionPattern) {
+				if allow() {
+					continue
+				}
 				erro()
 			}
 		} else if versionIsNotPattern(newVersionPattern) {
 			if !testVersionMatchesPattern(newVersionPattern, existingVersionPattern) {
+				if allow() {
+					continue
+				}
 				erro()
 			}
 		} else {
@@ -333,10 +349,8 @@ func addTo(dep dependency, deps *[]depInfo) {
 				(*deps)[i].dep[1] = tmp
 				return
 			}
-			for _, a := range allowDouble {
-				if a == e.dep[0] {
-					return
-				}
+			if allow() {
+				continue
 			}
 			erro()
 		}
