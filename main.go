@@ -206,7 +206,7 @@ func main() {
 		}
 		if strings.HasPrefix(d.url, "file://") {
 			output("cp", strings.TrimPrefix(d.url, "file:/"), "output/linux-64/")
-			toAdd = append(toAdd, f("%s/%s/conda-provision/tree/master/recipes", domain, org))
+			toAdd = append(toAdd, f("%s/%s/conda-provisioning/tree/master/recipes", domain, org))
 		} else {
 			executeDir("output/linux-64", "wget", d.url)
 			toAdd = append(toAdd, d.url)
