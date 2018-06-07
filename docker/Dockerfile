@@ -25,7 +25,8 @@ RUN yum -y update || true &&\
     /usr/bin/bash miniconda.sh -b -p $HOME/miniconda2 &&\
     rm miniconda.sh &&\
     export PATH="$HOME/miniconda2/bin:$PATH" &&\
-    conda install conda-build && conda update conda-build &&\
+    conda config --set auto_update_conda false &&\
+    conda install conda-build=3.0.6 &&\
     curl -LO https://storage.googleapis.com/golang/go1.7.linux-amd64.tar.gz &&\
     tar -C /usr/local -xzf go1.7.linux-amd64.tar.gz
 
