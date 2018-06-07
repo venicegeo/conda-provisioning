@@ -18,7 +18,6 @@ import (
 
 var domain string
 var org string
-var scriptToRun string
 var pythonVersion string
 var internalRecipesRepo string
 var wg = sync.WaitGroup{}
@@ -106,7 +105,6 @@ func main() {
 	defer cleanup()
 	flag.StringVar(&domain, "domain", "https://github.com", "Domain to pull from")
 	flag.StringVar(&org, "org", "venicegeo", "Org")
-	flag.StringVar(&scriptToRun, "init", "ubuntu", "Which init script to run")
 	flag.StringVar(&pythonVersion, "pyversion", "2.7.13", "Version of python to use")
 	flag.StringVar(&internalRecipesRepo, "inrecipesrepo", "venicegeo-conda-recipes", "Internal Recipes Repo")
 	flag.StringVar(&externalChannel, "echannel", "", "External channel local path")
@@ -118,15 +116,6 @@ func main() {
 	fmt.Println(repos, forcedDeps, allowDouble)
 	for _, repo := range append(repos, internalRecipesRepo) {
 		execute("git", "clone", f("%s/%s/%s", domain, org, repo))
-	}
-	switch scriptToRun {
-	case "ubuntu":
-		execute("sudo", "./ubuntu-init.sh")
-	case "centos":
-		execute("sudo", "./centos-init.sh")
-	case "":
-	default:
-		log.Fatalln("Unknown init script")
 	}
 	execute("curl", "-L", "https://repo.continuum.io/miniconda/Miniconda2-4.3.21-Linux-x86_64.sh", "-o", "miniconda.sh")
 	execute("bash", "miniconda.sh", "-b", "-p", "./miniconda2")
