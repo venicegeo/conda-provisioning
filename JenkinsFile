@@ -5,6 +5,7 @@ node {
   def golangTool = tool 'golang_1.7'
   
   stage("Config") {
+	  deleteDir()
     // clone the configuration repository and copy the current configuration
     def configDir = "${root}/configuration"
     def configFile = "${root}/config.json"
