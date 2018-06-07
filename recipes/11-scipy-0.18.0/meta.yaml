@@ -1,0 +1,46 @@
+package:
+  name: scipy
+  version: 0.18.0
+
+source:
+  fn: scipy-0.18.0.tar.gz
+  url: https://pypi.io/packages/source/s/scipy/scipy-0.18.0.tar.gz
+  md5: d70e7f533622ab705bc016dac328d93e
+
+build:
+  string: blas_openblas_np114
+
+requirements:
+  build:
+    - toolchain
+    - python 2.7.13
+    - setuptools
+    - cython
+    - blas 1.1 openblas
+    - libgfortran 3.0.0
+    - openblas 0.2.20|0.2.20.*
+    - numpy 1.14.0 py27_blas_openblas_200
+  run:
+    - python 2.7.13
+    - blas 1.1 openblas
+    - libgfortran 3.0.0
+    - openblas 0.2.20|0.2.20.*
+    - numpy 1.14.0 py27_blas_openblas_200
+
+about:
+  home: http://www.scipy.org/
+  license: BSD 3-Clause
+  license_file: LICENSE.txt
+  summary: Scientific Library for Python
+  description: |
+    SciPy is a Python-based ecosystem of open-source software for mathematics,
+    science, and engineering.
+  doc_url: http://www.scipy.org/docs.html
+  dev_url: https://github.com/scipy/scipy
+
+extra:
+  recipe-maintainers:
+    - jakirkham
+    - msarahan
+    - rgommers
+    - ocefpaf

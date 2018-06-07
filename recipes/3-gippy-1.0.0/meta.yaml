@@ -1,0 +1,30 @@
+package:
+  name: gippy
+  version: 1.0.0.post3
+
+source:
+  url: https://pypi.python.org/packages/80/39/620a9b147adce81e58a77aac0866ad0d6e18662b0374475eba793125345b/gippy-1.0.0.post3.tar.gz
+  fn: gippy-1.0.0.post3.tar.gz
+  md5: 22511513f183f189fafa8dded6b6bf41
+
+requirements:
+  build:
+    - gcc 4.8.5
+    - python 2.7.13
+    - numpy 1.14.0 py27_blas_openblas_200
+    - libgdal 2.1.0
+    - potrace 1.15
+    - wheel 0.29.0
+
+  run:
+    - python 2.7.13
+    - numpy 1.14.0 py27_blas_openblas_200
+
+build:
+  string: py{{py}}_0
+  binary_relocation: False
+
+about:
+  home: https://github.com/gipit/gippy
+  summary: "Gippy is a Python library for image processing of geospatial raster data"
+  license: Apache 2.0

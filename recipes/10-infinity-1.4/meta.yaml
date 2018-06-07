@@ -1,0 +1,28 @@
+package:
+  name: infinity
+  version: "1.4"
+
+source:
+  fn: infinity-1.4.tar.gz
+  url: https://pypi.python.org/packages/6d/cf/9d301cb8963e5e391da214ee2cedf20cfa7c958e76ea3e577fc77f3eaae0/infinity-1.4.tar.gz
+  md5: 635a344a05c37c1e005b0f1233ecbda9
+
+build:
+  number: 0
+  skip: False
+
+requirements:
+  build:
+    - python 2.7.13
+    - setuptools 39.2.0
+  run:
+    - python 2.7.13
+
+test:
+  imports:
+    - infinity
+
+about:
+  home: https://github.com/kvesteri/infinity
+  license: BSD License
+  summary: 'All-in-one infinity value for Python. Can be compared to any object.'

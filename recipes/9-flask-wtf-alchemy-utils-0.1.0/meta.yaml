@@ -1,0 +1,29 @@
+package:
+  name: flask-wtf-alchemy-utils
+  version: "0.1.0"
+
+source:
+  fn: flask-wtf-alchemy-utils-0.1.0.tar.gz
+  url: https://pypi.python.org/packages/57/4f/58e4e07f1561d4e456eeea6536b802fbba11201e6050158fcb1cc8ee41a3/flask-wtf-alchemy-utils-0.1.0.tar.gz
+  md5: 43d5cf2fe54b3fed62d2163d28e73f1b
+
+build:
+  number: 0
+  skip: False
+
+requirements:
+  build:
+    - python 2.7.13
+    - setuptools 39.2.0
+    - flask 0.11.1
+    - flask-wtf 0.12
+    - wtforms-alchemy 0.16.1
+  run:
+    - python 2.7.13
+    - flask 0.11.1
+    - flask-wtf 0.12
+    - wtforms-alchemy 0.16.1
+
+about:
+  home: https://github.com/Jaza/flask-wtf-alchemy-utils
+  summary: 'Form and field utility base classes for use with Flask, Flask-WTF, and wtforms-alchemy.'

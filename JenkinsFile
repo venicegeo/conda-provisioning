@@ -1,0 +1,68 @@
+#!/usr/bin/groovy
+
+node {
+  def root = pwd()
+  def golangTool = tool 'golang_1.7'
+  
+  stage("Config") {
+    // clone the configuration repository and copy the current configuration
+    def configDir = "${root}/configuration"
+    def configFile = "${root}/config.json"
+    dir(configDir) {
+      git url: "${env.CONFIGURATION_URL}", credentialsId: "${env.CONFIGURATION_CREDS}"
+      sh "mv ${configDir}/${ENVIRONMENT}-config.json ${configFile}"
+      deleteDir()
+    }
+    // read the current configuration
+    def configJson = readJSON file: "${configFile}"
+    for (param in configJson.credparams + configJson.jobparams) { 
+      env."${param.name}" = (param.type == "booleanParam") ? "${param.defaultvalue}".toBoolean() : "${param.defaultvalue}"
+    }
+  }
+
+	stage("Setup") {
+		deleteDir()
+	  	git url: "${env.GIT_URL}", branch: "${env.GIT_BRANCH}"
+		withEnv([
+          "PATH+=${golangTool}/bin:${root}/gopath/bin",
+          "GOROOT=${golangTool}",
+          "GOPATH=${root}/gopath"
+        ]) {
+            sh """
+              mkdir -p ${root}/gopath/bin ${root}/gopath/pkg ${root}/gopath/src/github.com/venicegeo/conda-provisioning
+              go version
+			  mv vendor/ ${root}/gopath/src/github.com/venicegeo/conda-provisioning
+			  mv main.go ${root}/gopath/src/github.com/venicegeo/conda-provisioning
+			  cd ${root}/gopath/src/github.com/venicegeo/conda-provisioning
+			  go install
+            """
+        }
+    }
+
+    stage("Docker") {
+        sh """mkdir -p docker/share
+          mv recipes docker/share/"""
+        dir("docker") {
+	    withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: "${env.ARTIFACT_READ_ONLY_CREDS}", usernameVariable: 'NEXUSUSER', passwordVariable: 'NEXUSPASS']]) {
+                sh """
+		  sed -i "s*SED_CHANNEL*$CONDA_CHANNEL_URL*g" recipe-script.sh
+		  sed -i "s*SED_USER*$NEXUSUSER*g" recipe-script.sh
+		  sed -i "s*SED_PASSWORD*$NEXUSPASS*g" recipe-script.sh
+	          docker-compose rm -f --all
+                  docker-compose up --build --no-color"""
+	    }
+	}
+    }
+    
+    stage("Nexus Deploy") {
+		sh """
+	  	  find ${root}/docker/share -type f
+		  exit 1
+		"""
+        dir ("docker/share") {
+            withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: "${env.ARTIFACT_STORAGE_CREDS}", usernameVariable: 'NEXUSUSER', passwordVariable: 'NEXUSPASS']]) {
+		sh 'for f in $(find linux-64 -type f); do curl -T $f -u $NEXUSUSER:$NEXUSPASS $CONDA_CHANNEL_URL/$f; done'
+            }
+        }
+    }
+}

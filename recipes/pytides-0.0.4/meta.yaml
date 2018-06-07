@@ -1,0 +1,32 @@
+package:
+  name: pytides
+  version: "0.0.4"
+
+source:
+  fn: pytides-0.0.4.tar.gz
+  url: https://pypi.python.org/packages/f1/2d/7f16f9734b4f97f65548c485a126c7c0e50d2f1aad276a272bdb3030022d/pytides-0.0.4.tar.gz
+  md5: 376bbc0151624cb2030a8b39bfa93a37
+
+build:
+  number: 0
+  skip: False
+
+requirements:
+  build:
+    - python 2.7.13
+    - setuptools 39.2.0
+    - numpy 1.14.0 py27_blas_openblas_200
+    - scipy 0.18.0 blas_openblas_np114
+  run:
+    - python 2.7.13
+    - numpy 1.14.0 py27_blas_openblas_200
+    - scipy 0.18.0 blas_openblas_np114
+
+test:
+  imports:
+    - pytides
+
+about:
+  home: https://github.com/sam-cox/pytides
+  license: MIT
+  summary: 'Pytides is small Python package for the analysis and prediction of tides.'

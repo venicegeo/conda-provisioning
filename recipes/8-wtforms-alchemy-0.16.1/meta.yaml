@@ -1,0 +1,39 @@
+build:
+  number: 0
+
+package:
+  name: wtforms-alchemy
+  version: "0.16.1"
+
+source:
+  fn: WTForms-Alchemy-0.16.1.tar.gz
+  url: https://pypi.python.org/packages/14/91/42c96a29c38e4faa5047284c79cb30b280ef238f057e228b9c4ea1c3cf05/WTForms-Alchemy-0.16.1.tar.gz
+  md5: 858ae5b2c1209af1dd96a857bb76f4c6
+
+requirements:
+  build:
+    - python 2.7.13
+    - setuptools 39.2.0
+    - sqlalchemy 1.0.14
+    - wtforms 2.1
+    - wtforms-components 0.10.0
+    - sqlalchemy-utils 0.32.9
+    - six 1.10.0
+
+  run:
+    - python 2.7.13
+    - sqlalchemy 1.0.14
+    - wtforms 2.1
+    - wtforms-components 0.10.0
+    - sqlalchemy-utils 0.32.9
+    - six 1.10.0
+
+test:
+  imports:
+    - wtforms_alchemy
+
+about:
+  home: https://github.com/kvesteri/wtforms-alchemy
+  license: BSD License
+  summary: 'Generates WTForms forms from SQLAlchemy models.'
+

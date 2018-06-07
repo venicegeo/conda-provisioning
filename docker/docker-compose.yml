@@ -1,0 +1,6 @@
+version: '2'
+services:
+  conda-build:
+    build: .
+    volumes:
+      - ./share:/root/share

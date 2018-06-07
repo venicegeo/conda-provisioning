@@ -1,0 +1,37 @@
+build:
+  number: 0
+
+package:
+  name: sqlalchemy-utils
+  version: "0.32.9"
+
+source:
+  fn: SQLAlchemy-Utils-0.32.9.tar.gz
+  url: https://pypi.python.org/packages/4e/85/bf1255b8fdef127a019f1ed7ff174a5f7482bc539f83213cf137eb703f1e/SQLAlchemy-Utils-0.32.9.tar.gz
+  md5: 58d81cc05dc6eca9233c7aa32d8e3af2
+
+requirements:
+  build:
+    - python 2.7.13
+    - setuptools 39.2.0
+    - six 1.10.0
+    - sqlalchemy 1.0.14
+
+  run:
+    - python 2.7.13
+    - six 1.10.0
+    - sqlalchemy 1.0.14
+
+test:
+  imports:
+    - sqlalchemy_utils
+    - sqlalchemy_utils.functions
+    - sqlalchemy_utils.primitives
+    - sqlalchemy_utils.relationships
+    - sqlalchemy_utils.types
+
+about:
+  home: https://github.com/kvesteri/sqlalchemy-utils
+  license: BSD License
+  summary: 'Various utility functions for SQLAlchemy.'
+
