@@ -65,7 +65,7 @@ node {
             withCredentials([[$class: 'UsernamePasswordMultiBinding', credentialsId: "${env.ARTIFACT_STORAGE_CREDS}", usernameVariable: 'NEXUSUSER', passwordVariable: 'NEXUSPASS']]) {
 				sh 'for f in $(find linux-64 -type f); do curl -T $f -u $NEXUSUSER:$NEXUSPASS $CONDA_CHANNEL_URL/$f; done'
 		  		sh 'for f in $(find noarch -type f); do curl -T $f -u $NEXUSUSER:$NEXUSPASS $CONDA_CHANNEL_URL/$f; done'
-				sh 'curl -T index.csv -u $NEXUSUSER:$NEXUSPASS $CONDA_CHANNEL_URL/index.csv; done'          
+				sh 'curl -T index.csv -u $NEXUSUSER:$NEXUSPASS $CONDA_CHANNEL_URL/index.csv'          
 			}
         }
     }
