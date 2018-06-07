@@ -20,8 +20,7 @@ RUN yum -y update || true &&\
     yum -y install bzip2 &&\
     yum -y install swig &&\
     yum -y install openssl-devel &&\
-    wget https://people.centos.org/tru/devtools-2/6/x86_64/RPMS/devtoolset-2-gcc-gfortran-4.8.2-15.el6.x86_64.rpm &&\
-    yum -y install devtoolset-2-gcc-gfortran-4.8.2-15.el6.x86_64.rpm &&\
+    yum -y install gcc-gfortran &&\
     curl -L https://repo.continuum.io/miniconda/Miniconda2-4.3.21-Linux-x86_64.sh -o miniconda.sh &&\
     /usr/bin/bash miniconda.sh -b -p $HOME/miniconda2 &&\
     rm miniconda.sh &&\

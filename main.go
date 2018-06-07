@@ -94,10 +94,16 @@ var condarc = `channels:
   - defaults
 `
 
+func cleanup() {
+	for _, repo := range repos {
+		exec.Command("rm", "-rf", repo).Run()
+	}
+	exec.Command("rm", "-rf", internalRecipesRepo).Run()
+	exec.Command("rm", "-rf", "miniconda2")
+}
+
 func main() {
-	defer func() {
-		execute("rm", "-rf", "miniconda2")
-	}()
+	defer cleanup()
 	flag.StringVar(&domain, "domain", "https://github.com", "Domain to pull from")
 	flag.StringVar(&org, "org", "venicegeo", "Org")
 	flag.StringVar(&scriptToRun, "init", "ubuntu", "Which init script to run")
@@ -110,12 +116,6 @@ func main() {
 	flag.Var(&allowDouble, "allow", "Allow duplicate package versions")
 	flag.Parse()
 	fmt.Println(repos, forcedDeps, allowDouble)
-	defer func(repos []string) {
-		for _, repo := range repos {
-			exec.Command("rm", "-rf", repo).Run()
-		}
-		exec.Command("rm", "-rf", internalRecipesRepo).Run()
-	}(repos)
 	for _, repo := range append(repos, internalRecipesRepo) {
 		execute("git", "clone", f("%s/%s/%s", domain, org, repo))
 	}
@@ -229,6 +229,7 @@ func main() {
 	w := csv.NewWriter(file)
 	check(w.WriteAll(csvDat))
 	w.Flush()
+	conda("install", "conda-build="+condaBuildVersion, "-y")
 	conda("index", "output/linux-64")
 	conda("index", "output/noarch")
 	return
@@ -356,80 +357,9 @@ func addTo(dep dependency, deps *[]depInfo) {
 	*deps = append(*deps, depInfo{dep, ""})
 }
 
-//func fillInCondaInfo(deps []depInfo) {
-//	for i, dep := range deps {
-//		name := strings.Join(dep.dep, "=")
-//		dat, err := oconda("info", "--json", name)
-//		if err != nil {
-//			log.Println("Error running against", name)
-//			continue
-//		}
-//		var info map[string][]CondaPackageInfo
-//		check(json.Unmarshal(dat, &info))
-//		var channelToUse *CondaPackageInfo = nil
-//		for _, channelInfo := range info[name] {
-//			pygood := false
-//			for _, dep := range channelInfo.Depends {
-//				parts := strings.Split(dep, " ")
-//				if parts[0] != "python" || len(parts) == 1 {
-//					continue
-//				}
-//				pygood = true
-//				break
-//			}
-//			if pygood {
-//				channelToUse = &channelInfo
-//				break
-//			}
-//		}
-//		if channelToUse != nil {
-//			log.Println(channelToUse.Url)
-//			deps[i].info = channelToUse
-//		} else {
-//			log.Println("No good channel found for", name)
-//		}
-//	}
-//}
-
-//func fillInSubdeps(deps *[]depInfo) {
-//	l := len(*deps)
-//	for i := 0; i < l; i++ {
-//		dep := (*deps)[i]
-//		if dep.subDepsAdded || dep.info == nil {
-//			continue
-//		}
-//		for _, sub := range dep.info.Depends {
-//			parts := strings.Split(sub, " ")
-//			if parts[0] == "python" {
-//				continue
-//			}
-//			if len(parts) > 1 {
-//				matches := false
-//				for _, d := range *deps {
-//					if d.dep[0] == parts[0] {
-//						if testVersionMatchesPattern(d.dep[1], parts[1]) {
-//							matches = true
-//							break
-//						}
-//					}
-//				}
-//				if matches {
-//					continue
-//				}
-//				if strings.Contains(parts[1], "|") {
-//					parts[1] = strings.SplitN(parts[1], "|", 2)[0]
-//				} else if strings.Contains(parts[1], ">") {
-//					parts[1] = strings.TrimPrefix(strings.SplitN(parts[1], ",", 2)[0], ">=")
-//				}
-//			}
-//			fmt.Println(parts)
-//			addTo(parts, deps)
-//		}
-//	}
-//}
-
 func check(err error, a ...interface{}) {
 	if err != nil {
+		defer cleanup()
 		log.Fatalln(append([]interface{}{err.Error()}, a...))
 	}
 }
