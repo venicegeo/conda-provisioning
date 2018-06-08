@@ -92,6 +92,7 @@ var condarc = `channels:
   - bioconda
   - conda-forge
   - defaults
+  - anaconda
 `
 
 func cleanup() {
@@ -247,7 +248,8 @@ func scan(deps *[]depInfo, scanPatterns bool) bool {
 		var info map[string][]CondaPackageInfo
 		check(json.Unmarshal(dat, &info))
 		var channelToUse *CondaPackageInfo = nil
-		for _, channelInfo := range info[name] {
+		for i := len(info[name]) - 1; i >= 0; i-- {
+			channelInfo := info[name][i]
 			pygood := false
 			pyfound := false
 			for _, dep := range channelInfo.Depends {
@@ -399,7 +401,7 @@ func testVersionMatchesPattern(version, pattern string) bool {
 		tmp := []byte(version)
 		for i, l := range []byte(pattern) {
 			if i == len(tmp) {
-				if pattern[i:] == ".*" {
+				if pattern[i:] == ".*" || pattern[i:] == "*" {
 					return true
 				} else {
 					return false
